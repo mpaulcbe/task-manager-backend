@@ -1,9 +1,19 @@
 services:
   - type: web
-    name: task-manager-api
-    runtime: python
+    name: task-manager-backend
+    env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn core.wsgi
+    startCommand: gunicorn core.wsgi:application
     envVars:
-      - key: DJANGO_SETTINGS_MODULE
-        value: core.settings
+      - key: DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: task-manager-db
+          property: connectionString
+
+databases:
+  - name: task-manager-db
+    plan: free
